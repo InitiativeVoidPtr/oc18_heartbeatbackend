@@ -3,7 +3,8 @@ package ecg.backend.model.entity;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
+import org.jetbrains.annotations.NotNull;
+
 
 /**
  * Brief description

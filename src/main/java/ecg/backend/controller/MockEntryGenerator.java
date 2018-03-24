@@ -66,7 +66,7 @@ public class MockEntryGenerator {
                              .orElseGet(() -> deviceRepository.saveAndFlush(new Device("TEST_DEVICE_" + deviceId)));
 
             scheduledFutures.add(taskScheduler.scheduleAtFixedRate(() -> createNewSample(device),
-                                                                   Duration.of(UPDATE_RATE_MS, ChronoUnit.MILLIS)));
+                                                                   Duration.of(UPDATE_RATE_MS, ChronoUnit.MILLIS).toMillis()));
         }
     }
 

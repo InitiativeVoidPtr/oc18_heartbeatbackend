@@ -4,8 +4,6 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * Brief description
@@ -20,7 +18,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Device extends AbstractEntity {
 
-    @NotBlank
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "device")
@@ -29,7 +26,7 @@ public class Device extends AbstractEntity {
     public Device() {
     }
 
-    public Device(@NotBlank final String name) {
+    public Device(final String name) {
         this.name = name;
     }
 
@@ -37,7 +34,7 @@ public class Device extends AbstractEntity {
         return name;
     }
 
-    public void setName(@NotNull final String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 }
