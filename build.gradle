@@ -1,0 +1,28 @@
+group 'org.initiative_void_ptr'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+def libraryVersions = [
+        gradle  : '4.6',
+        spring  : '2.0.0.RELEASE',
+        postgres: '42.2.2'
+]
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = libraryVersions.gradle
+}
+
+dependencies {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: libraryVersions.spring
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: libraryVersions.spring
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest', version: libraryVersions.spring
+    compile group: 'org.postgresql', name: 'postgresql', version: libraryVersions.postgres
+}

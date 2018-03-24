@@ -1,0 +1,17 @@
+version: '3.1'
+services:
+    heartbeat_db:
+        image: postgres:10.1-alpine
+        restart: unless-stopped
+        ports: 
+          - "5432:5432"
+        expose:
+          - "5432"
+        networks:
+            - heart_net
+        environment:
+            - POSTGRES_USER=heartback
+            - POSTGRES_PASSWORD=eKm7JkxzCF6MNg3NWh1l
+            - POSTGRES_DB=HEART_BACK
+networks:
+    heart_net:
