@@ -4,6 +4,11 @@ import ecg.backend.model.entity.Device;
 import ecg.backend.model.entity.Heartbeat;
 import ecg.backend.model.repository.DeviceRepository;
 import ecg.backend.model.repository.HeartbeatRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
+import org.springframework.stereotype.Service;
+
+import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -12,10 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ScheduledFuture;
-import javax.validation.constraints.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
-import org.springframework.stereotype.Service;
 
 /**
  * Brief description
@@ -82,7 +83,7 @@ public class MockEntryGenerator {
 
         heartbeat.setDevice(device);
         heartbeat.setTimeStamp(now);
-        heartbeat.setValue(40 * Math.sin((2 * Math.PI * secondsOfHour) / 1800) + 100);
+        heartbeat.setValue(40 * Math.sin((2 * Math.PI * secondsOfHour) / 120  + 10 * device.getId()) +100);
 
         heartbeatRepository.saveAndFlush(heartbeat);
     }
