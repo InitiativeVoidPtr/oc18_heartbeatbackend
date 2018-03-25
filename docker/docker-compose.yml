@@ -13,19 +13,12 @@ services:
             - POSTGRES_DB=HEART_BACK
 
     heartbeat_backend:
-        build: ./
+        build: .
         restart: unless-stopped
-        expose:
-            - "8080"
+        ports:
+            - "80:8080"
         networks:
             - heart_net
-            - app_net
-        environment:
-           - VIRTUAL_HOST=gspml2.die-softwareklitsche.de
-           - LETSENCRYPT_HOST=gspml2.die-softwareklitsche.de, driver.die-softwareklitsche.de
-           - LETSENCRYPT_EMAIL=admin@die-softwareklitsche.de
 
 networks:
     heart_net:
-    app_net:
-        external: true

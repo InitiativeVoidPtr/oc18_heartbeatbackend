@@ -21,5 +21,8 @@ public class RepositoryConfig extends RepositoryRestConfigurerAdapter {
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
         config.exposeIdsFor(Device.class);
+        config.getCorsRegistry()
+              .addMapping("/**")
+              .allowedOrigins("*");
     }
 }
