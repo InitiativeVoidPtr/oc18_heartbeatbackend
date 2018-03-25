@@ -37,4 +37,9 @@ public class Device extends AbstractEntity {
     public void setName(final String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

@@ -49,4 +49,16 @@ public class Heartbeat extends AbstractEntity {
     public void setValue(@NotNull final double value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb;
+        sb = new StringBuilder();
+
+        sb.append("Device: ").append(getDevice()).append(System.lineSeparator());
+        sb.append("TimeStamp: ").append(getDevice()).append(System.lineSeparator());
+        sb.append("Value: ").append(getDevice());
+
+        return sb.toString();
+    }
 }

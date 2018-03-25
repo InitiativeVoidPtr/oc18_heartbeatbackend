@@ -3,10 +3,8 @@ package ecg.backend;
 import ecg.backend.controller.MbedDeviceController;
 import ecg.backend.controller.MockEntryGenerator;
 import ecg.backend.model.entity.Device;
-import ecg.backend.model.mbed.CallbackRegistration;
 import ecg.backend.model.mbed.MbedDevice;
 import ecg.backend.model.repository.DeviceRepository;
-import java.net.URI;
 import java.util.ArrayList;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +12,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.ApplicationListener;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import static ecg.backend.config.MbedConfig.API_ACCESS;
 
@@ -39,27 +38,32 @@ public class Bootstrap implements ApplicationListener<ApplicationReadyEvent> {
     private final MockEntryGenerator   mockEntryGenerator;
     private final MbedDeviceController mbedDeviceController;
     private final RestTemplateBuilder  restTemplateBuilder;
-    private final WebClient            webClient;
 
+    private final TaskScheduler taskScheduler;
 
     @Autowired
     public Bootstrap(@NotNull final DeviceRepository deviceRepository,
                      @NotNull final MockEntryGenerator mockEntryGenerator,
                      @NotNull final MbedDeviceController mbedDeviceController,
-                     @NotNull @Qualifier("mbedTemplateBuilder") final RestTemplateBuilder restTemplateBuilder,
-                     @NotNull final WebClient webClient) {
+                     @NotNull @Qualifier("mbedTemplateBuilder") final RestTemplateBuilder restTemplateBuilder) {
         this.deviceRepository = deviceRepository;
         this.mockEntryGenerator = mockEntryGenerator;
 
         this.mbedDeviceController = mbedDeviceController;
-
         this.restTemplateBuilder = restTemplateBuilder;
-        this.webClient = webClient;
+
+        this.taskScheduler = new DefaultManagedTaskScheduler();
+
+
     }
 
     @Override
     public void onApplicationEvent(final ApplicationReadyEvent event) {
+
         mbedDeviceController.updateDevicesInDataBase();
+//        restTemplateBuilder.build()
+//                           .put(URI.create(API_ACCESS + "/v2/notification/callback"), new CallbackRegistration("http://185.162.248.93/callback"));
+//        taskScheduler.scheduleAtFixedRate(this::printMbedDeviceInfo, Duration.of(1000, ChronoUnit.MILLIS));
         printMbedDeviceInfo();
     }
 
@@ -69,15 +73,11 @@ public class Bootstrap implements ApplicationListener<ApplicationReadyEvent> {
             final RestTemplate template;
             template = restTemplateBuilder.build();
 
-            template.put(URI.create(API_ACCESS + "/v2/notification/callback"),
-                         new CallbackRegistration("http://185.162.248.93/callback"));
-
 //            System.out.println(template.getForObject(API_ACCESS + "/endpoints/" + device.getName() + "/3", String.class));
 //            System.out.println(template.getForObject(API_ACCESS + "/endpoints/" + device.getName() + "/3/0", String.class));
 //            System.out.println(template.getForObject(API_ACCESS + "/endpoints/" + device.getName() + "/3341", String.class));
-            while(true){
-                System.out.println(template.getForObject(API_ACCESS + "/endpoints/" + device.getName() + "/3341/0/5527", String.class));
-            }
+
+            System.out.println(template.getForObject(API_ACCESS + "/endpoints/" + device.getName() + "/3341/0/5527", String.class));
         }
     }
 
