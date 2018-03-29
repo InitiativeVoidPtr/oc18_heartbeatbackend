@@ -3,8 +3,12 @@ package ecg.backend;
 import ecg.backend.controller.MbedDeviceController;
 import ecg.backend.controller.MockEntryGenerator;
 import ecg.backend.model.entity.Device;
+import ecg.backend.model.mbed.CallbackRegistration;
 import ecg.backend.model.mbed.MbedDevice;
 import ecg.backend.model.repository.DeviceRepository;
+import java.net.URI;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,22 +65,28 @@ public class Bootstrap implements ApplicationListener<ApplicationReadyEvent> {
     public void onApplicationEvent(final ApplicationReadyEvent event) {
 
         mbedDeviceController.updateDevicesInDataBase();
-//        restTemplateBuilder.build()
-//                           .put(URI.create(API_ACCESS + "/v2/notification/callback"), new CallbackRegistration("http://185.162.248.93/callback"));
-//        taskScheduler.scheduleAtFixedRate(this::printMbedDeviceInfo, Duration.of(1000, ChronoUnit.MILLIS));
+        //mockEntryGenerator.startGenerator();
+
+        periodicPoll();
         printMbedDeviceInfo();
+    }
+
+    private void periodicPoll() {
+        mbedDeviceController.updateDevicesInDataBase();
+        restTemplateBuilder.build()
+                           .put(URI.create(API_ACCESS + "/v2/notification/callback"), new CallbackRegistration("http://185.162.248.93/callback"));
+        taskScheduler.scheduleAtFixedRate(this::printMbedDeviceInfo, Duration.of(3000, ChronoUnit.MILLIS));
     }
 
 
     private void printMbedDeviceInfo() {
+        mbedDeviceController.updateDevicesInDataBase();
         for (final Device device : deviceRepository.findAll()) {
             final RestTemplate template;
             template = restTemplateBuilder.build();
-
 //            System.out.println(template.getForObject(API_ACCESS + "/endpoints/" + device.getName() + "/3", String.class));
 //            System.out.println(template.getForObject(API_ACCESS + "/endpoints/" + device.getName() + "/3/0", String.class));
 //            System.out.println(template.getForObject(API_ACCESS + "/endpoints/" + device.getName() + "/3341", String.class));
-
             System.out.println(template.getForObject(API_ACCESS + "/endpoints/" + device.getName() + "/3341/0/5527", String.class));
         }
     }

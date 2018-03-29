@@ -1,6 +1,7 @@
 package ecg.backend.model.mbed;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Base64;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * @author mspoeri - Die Softwareklitsche GbR
  * @version 1.0
  */
+@JsonIgnoreProperties(value = {"registrations-expired"})
 public class AsyncResponse {
 
     private String id;

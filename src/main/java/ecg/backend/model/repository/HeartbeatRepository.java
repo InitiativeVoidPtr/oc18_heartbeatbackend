@@ -1,10 +1,11 @@
 package ecg.backend.model.repository;
 
 import ecg.backend.model.entity.Heartbeat;
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-import org.springframework.data.rest.core.annotation.RestResource;
-import org.springframework.stereotype.Repository;
 
 /**
  * Brief description
@@ -18,5 +19,6 @@ import org.springframework.stereotype.Repository;
  */
 @RepositoryRestResource
 public interface HeartbeatRepository extends JpaRepository<Heartbeat, Long> {
-
+    List<Heartbeat> getHeartbeatByDevice_IdOrderByIdDesc(@NotNull Long id, @NotNull Pageable pageable);
+    List<Heartbeat> getHeartbeatByDevice_IdOrderByIdDesc(@NotNull Long id);
 }

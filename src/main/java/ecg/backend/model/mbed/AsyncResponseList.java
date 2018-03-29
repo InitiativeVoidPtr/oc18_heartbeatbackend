@@ -1,6 +1,7 @@
 package ecg.backend.model.mbed;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,12 +15,10 @@ import org.jetbrains.annotations.NotNull;
  * @author mspoeri - Die Softwareklitsche GbR
  * @version 1.0
  */
+@JsonIgnoreProperties(value = {"reg-updates", "registrations"})
 public class AsyncResponseList {
     @JsonAlias("async-responses")
     private List<AsyncResponse> asyncRespons;
-
-    @JsonAlias("reg-updates")
-    private String regUpdates;
 
     public List<AsyncResponse> getAsyncRespons() {
         return asyncRespons;
@@ -27,13 +26,5 @@ public class AsyncResponseList {
 
     public void setAsyncRespons(@NotNull final List<AsyncResponse> asyncRespons) {
         this.asyncRespons = asyncRespons;
-    }
-
-    public String getRegUpdates() {
-        return regUpdates;
-    }
-
-    public void setRegUpdates(@NotNull final String regUpdates) {
-        this.regUpdates = regUpdates;
     }
 }

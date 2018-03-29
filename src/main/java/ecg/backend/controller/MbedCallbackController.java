@@ -58,25 +58,26 @@ public class MbedCallbackController {
         logger.info("###\n");
         logger.info("###\n");
         logger.info("###\n");
+
         try {
             asyncResponseList = mapper.readValue(string, AsyncResponseList.class);
-            storeValues(asyncResponseList);
+            if (asyncResponseList.getAsyncRespons() != null) {
+                storeValues(asyncResponseList.getAsyncRespons());
+            }
+
         } catch (IOException e) {
             logger.warn("Unable to parse JSON", e);
         }
 
-
-        logger.info(string);
         logger.info("###\n");
         logger.info("###\n");
         logger.info("###\n");
     }
 
-    private void storeValues(@NotNull final AsyncResponseList list) {
+    private void storeValues(@NotNull final List<AsyncResponse> list) {
 
-        list.getAsyncRespons().forEach(logger::info);
-        for (AsyncResponse response : list.getAsyncRespons()
-                                          .stream()
+        list.forEach(logger::info);
+        for (AsyncResponse response : list.stream()
                                           .filter(Objects::nonNull)
                                           .filter(response -> response.getError() == null)
                                           .collect(Collectors.toList())) {
@@ -93,13 +94,10 @@ public class MbedCallbackController {
                                      .findAny()
                                      .orElseGet(() -> deviceRepository.saveAndFlush(new Device(name)));
 
-            heartbeatsFromPayload(response.getPayload(), device).forEach(logger::info);
+            heartbeatsFromPayload(response.getPayload(), device).stream()
+                                                                .map(heartbeatRepository::saveAndFlush)
+                                                                .forEach(logger::info);
         }
-
-        list.getAsyncRespons()
-            .stream()
-            .filter(response -> response.getError() != null)
-            .forEach(response -> logger.error("Response error: " + response));
     }
 
     private List<Heartbeat> heartbeatsFromPayload(@NotNull final String payload,
@@ -111,13 +109,18 @@ public class MbedCallbackController {
             final String[]  values;
             final Heartbeat newHeartbeat;
 
-            values = valueSet.trim().split(",");
+            values = valueSet.split(",");
+
+            if (values.length < 2 || values[0] == null || values[1] == null) {
+                logger.warn("Invalid values");
+                continue;
+            }
 
             newHeartbeat = new Heartbeat();
 
             newHeartbeat.setDevice(device);
-            newHeartbeat.setTimeStamp(bootTime.plus(Long.getLong(values[0]), ChronoUnit.MILLIS));
-            newHeartbeat.setValue(Double.valueOf(values[1]));
+            newHeartbeat.setTimeStamp(bootTime.plus(Long.parseLong(values[0]), ChronoUnit.MILLIS));
+            newHeartbeat.setValue(Double.parseDouble(values[1]));
 
             heartbeats.add(newHeartbeat);
         }
